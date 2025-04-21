@@ -1,0 +1,39 @@
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+    font-family: 'Exo 2';
+}
+
+
+#bg-canvas{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1; /* behind everything */
+    width: 100vw;
+    height: 100vh;
+}
+
+#content{
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
+}
+
+
+#title-card{
+    padding-left: 1rem;
+}
+
+#navbar{
+    margin-top: 1rem;
+    margin-right: 1rem;
+}
+
+#top-bar{
+    display: flex;
+    justify-content: space-between;
+}
