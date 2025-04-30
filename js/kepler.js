@@ -23,11 +23,11 @@ function drawCircle(x, y, radius, colorHex){
 }
 
 // background
-ctx.fillStyle = '#d5deeb';
+ctx.fillStyle = '#cedef5';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 //draw sun
-drawCircle(x0, y0, canvas.width * .05, "#ffae00")
+// drawCircle(x0, y0, canvas.width * .05, "#ffae00")
 
 
 //draw planet #1c69e6
@@ -65,7 +65,7 @@ function orbitMars(time){
     requestAnimationFrame(orbitMars);
 }
 
-requestAnimationFrame(orbitEarth);
-requestAnimationFrame(orbitMars);
+// requestAnimationFrame(orbitEarth);
+// requestAnimationFrame(orbitMars);
 
 
