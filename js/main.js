@@ -92,9 +92,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (mainImg && modal && modalImg && modalBg) {
         mainImg.addEventListener('click', function() {
-            modal.classList.add('show');
-            modalImg.src = mainImg.src;
-            modalImg.alt = mainImg.alt;
+            // Only show modal on desktop (not mobile)
+            if (window.innerWidth > 768) {
+                modal.classList.add('show');
+                modalImg.src = mainImg.src;
+                modalImg.alt = mainImg.alt;
+            }
         });
 
         modalBg.addEventListener('click', function() {

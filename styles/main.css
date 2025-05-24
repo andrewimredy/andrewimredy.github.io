@@ -52,7 +52,7 @@ body, html {
     font-size: 3rem;
 }
 
-section {
+#aboutme, #gallery, #projects {
     padding: 1rem;
     min-height: 50vh;
     display: flex;
@@ -152,14 +152,11 @@ section {
         display: flex;
         flex-direction: column;
     }
-
-    .modal {
-        display: none !important; /* Always hide modal on mobile */
-    }
 }
 
+/* Modal styles */
 .modal {
-    display: none; 
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -167,22 +164,13 @@ section {
     width: 100vw;
     height: 100vh;
     overflow: auto;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.8);
     justify-content: center;
     align-items: center;
 }
 
 .modal.show {
     display: flex;
-}
-
-.modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    border-radius: 12px;
-    box-shadow: 0 0 24px #000a;
-    background: #fff;
-    object-fit: contain;
 }
 
 .modal-bg {
@@ -192,5 +180,17 @@ section {
     left: 0;
     top: 0;
     cursor: pointer;
-    z-index: 1;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    margin: auto;
+    z-index: 1001;
+    border-radius: .3rem;
+    box-shadow: 0 0 24px 4px rgba(0,0,0,0.5);
+    display: block;
+    background: white;
+    object-fit: contain;
 }
