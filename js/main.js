@@ -29,11 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "pictures/IMG_4096.webp",
         "pictures/IMG_4119.webp",
         "pictures/IMG_4197.webp",
-        "pictures/IMG_4355.webp",
         "pictures/IMG_4463.webp",
         "pictures/IMG_4480.webp",
         "pictures/IMG_6895.webp",
-        "pictures/DSC_0146.JPEG",
         "pictures/img_1477.webp",
         "pictures/img_0089.webp",
         "pictures/img_1656.webp"
