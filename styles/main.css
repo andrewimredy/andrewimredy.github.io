@@ -62,12 +62,13 @@ body, html {
 
 #profile-pic{
     max-width: min(460px, 100%);
-    border-radius: .3rem;
+    border-radius: .5rem;
 }
 
 .section-title{
-    margin-top: 6px;
-    margin-bottom: 6px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    font-size: xx-large;
 }
 
 .aboutme-p {
@@ -75,6 +76,49 @@ body, html {
     margin-bottom: 6px;
     max-width: min(700px, 100%);
 
+}
+
+
+.work-item {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-top: 1rem;
+    transition: transform 0.2s ease;
+    padding-bottom: .2rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: min(460px, 100%);
+    margin-bottom: 2rem;
+
+}
+
+.work-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.work-thumb {
+    height: auto;
+    border-radius: 0.5rem;
+    max-width: min(460px, 100%);
+
+}
+
+.work-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #2c3e50;
+    color: white;
+    font-size: larger;
+    text-decoration: none;
+    border-radius: 0.4rem;
+    transition: background-color 0.2s ease;
+}
+
+.work-button:hover {
+    background-color: #1a2533;
 }
 
 #slideshow-container {
@@ -98,17 +142,18 @@ body, html {
     width: 100%;
     height: 100%;
     gap: 2rem; 
+    overflow: hidden;
 }
 
 #slideshow img {
     max-width: 100%;
-    max-height: 75vh;
+    max-height: 70vh;
     height: auto;
     width: auto;
     object-fit: contain;
     transition: transform 0.5s ease;
     display: block;
-    border-radius: .3rem;
+    border-radius: .5rem;
 }
 
 .nav-button {
@@ -151,6 +196,7 @@ body, html {
     #navbar {
         display: flex;
         flex-direction: column;
+        margin-top: 2.5rem;
     }
 }
 
@@ -193,4 +239,14 @@ body, html {
     display: block;
     background: white;
     object-fit: contain;
+}
+
+.work-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+.work-item-link:hover .work-item {
+    box-shadow: 0 0 8px #aaa;
+    cursor: pointer;
 }
