@@ -1,48 +1,104 @@
+function shuffle(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
 document.addEventListener("DOMContentLoaded", () => {
-    const slideshow = document.getElementById("slideshow");
+    const mainPic = document.getElementById("main-img");
+    const prevButton = document.getElementById("prev");
+    const nextButton = document.getElementById("next");
+
     const images = [
-        "pictures/IMG_2269.jpeg",
-        "pictures/IMG_2536.jpeg",
-        "pictures/IMG_2617.jpeg"
-        // Add more image paths here if needed
+        "pictures/IMG_1974.webp",
+        "pictures/IMG_2615.webp",
+        "pictures/IMG_2617.webp",
+        "pictures/IMG_3094.webp",
+        "pictures/IMG_3491.webp",
+        "pictures/IMG_3661.webp",
+        "pictures/IMG_3688.webp",
+        "pictures/IMG_3721.webp",
+        "pictures/IMG_3753.webp",
+        "pictures/IMG_3913.webp",
+        "pictures/IMG_3945.webp",
+        "pictures/IMG_3974.webp",
+        "pictures/IMG_3991.webp",
+        "pictures/IMG_3995.webp",
+        "pictures/IMG_4096.webp",
+        "pictures/IMG_4119.webp",
+        "pictures/IMG_4197.webp",
+        "pictures/IMG_4355.webp",
+        "pictures/IMG_4463.webp",
+        "pictures/IMG_4480.webp",
+        "pictures/IMG_6895.webp",
+        "pictures/DSC_0146.JPEG",
+        "pictures/img_1477.webp",
+        "pictures/img_0089.webp",
+        "pictures/img_1656.webp"
     ];
 
-    // Randomize the image order
-    const shuffledImages = images.sort(() => Math.random() - 0.5);
-
-    // Create image elements and add them to the slideshow
-    shuffledImages.forEach((src, index) => {
-        const img = document.createElement("img");
-        img.src = src;
-        img.classList.add("pic");
-        if (index === 0) img.classList.add("active"); // Set the first image as active
-        slideshow.appendChild(img);
-    });
+    shuffle(images);
 
     let currentIndex = 0;
-    const imageElements = document.querySelectorAll("#slideshow img");
 
-    // Function to show the next image
-    const showImage = (index) => {
-        imageElements.forEach((img, i) => {
-            img.classList.toggle("active", i === index);
+    // Helper function to update the main image
+    function updateImage(index) {
+        mainPic.src = images[index];
+        mainPic.setAttribute("data-index", index);
+    }
+
+    // Event listeners for desktop navigation
+    prevButton.addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateImage(currentIndex);
+    });
+
+    nextButton.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateImage(currentIndex);
+    });
+
+    // Swipe functionality for mobile
+    let startX = 0;
+
+    mainPic.addEventListener("touchstart", (e) => {
+        startX = e.touches[0].clientX;
+    });
+
+    mainPic.addEventListener("touchend", (e) => {
+        const endX = e.changedTouches[0].clientX;
+        if (startX - endX > 50) {
+            // Swipe left
+            currentIndex = (currentIndex + 1) % images.length;
+            updateImage(currentIndex);
+        } else if (endX - startX > 50) {
+            // Swipe right
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateImage(currentIndex);
+        }
+    });
+
+    // Initialize the slideshow
+    updateImage(currentIndex);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const mainImg = document.getElementById('main-img');
+    const modal = document.getElementById('img-modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalBg = document.querySelector('.modal-bg');
+
+    if (mainImg && modal && modalImg && modalBg) {
+        mainImg.addEventListener('click', function() {
+            modal.classList.add('show');
+            modalImg.src = mainImg.src;
+            modalImg.alt = mainImg.alt;
         });
-    };
 
-    // Navigation buttons
-    document.getElementById("prev").addEventListener("click", () => {
-        currentIndex = (currentIndex - 1 + imageElements.length) % imageElements.length;
-        showImage(currentIndex);
-    });
-
-    document.getElementById("next").addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % imageElements.length;
-        showImage(currentIndex);
-    });
-
-    // Automatic slideshow
-    setInterval(() => {
-        currentIndex = (currentIndex + 1) % imageElements.length;
-        showImage(currentIndex);
-    }, 5000); // 5 seconds
+        modalBg.addEventListener('click', function() {
+            modal.classList.remove('show');
+        });
+    }
 });
