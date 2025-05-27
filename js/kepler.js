@@ -38,89 +38,88 @@ function gravForceVector(p1, p2) {
 
 
 window.onload = function() {
-      const canvas = document.getElementById('space');
-      const ctx = canvas.getContext('2d');
-      const gravitySlider = document.getElementById('gravity-slider');
-      const gravityValue = document.getElementById('gravity-value');
-      let particles = [];
-      let planet = {};
-      //particle should have Px Py Vx Vy
+    const canvas = document.getElementById('space');
+    const ctx = canvas.getContext('2d');
+    const gravitySlider = document.getElementById('gravity-slider');
+    const gravityValue = document.getElementById('gravity-value');
+    let particles = [];
+    let planet = {};
+    //particle should have Px Py Vx Vy
 
-      function resizeCanvas() {
+    // Set initial slider value and position
+    gravitySlider.value = 9.8; // Set slider to 9.8
+    gravityValue.textContent = (9.8).toFixed(1); // Display 9.8
+    G = 9.8; // Ensure G starts at 9.8
+
+    function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        planet = {x: canvas.width/2, y: canvas.height/2};
+        planet = {x: canvas.width / 2, y: canvas.height / 2};
         drawParticles();
-      }
+    }
 
-      //G slider?
-      gravitySlider.addEventListener('input', function() {
+    //G slider?
+    gravitySlider.addEventListener('input', function() {
         G = parseFloat(gravitySlider.value);
         gravityValue.textContent = G.toFixed(1);
     });
 
-      function drawParticles() {
+    function drawParticles() {
         ctx.fillStyle = '#111';
-        ctx.fillRect(0,0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (const p of particles) {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, moonRadius, 0, 2 * Math.PI);
-          ctx.fillStyle = '#888';
-          ctx.fill();
-          ctx.strokeStyle = '#fff';
-          ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, moonRadius, 0, 2 * Math.PI);
+            ctx.fillStyle = '#888';
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.stroke();
         }
         //draw planet
         ctx.beginPath();
-        ctx.arc(planet.x, planet.y, planetRadius, 0, 2*Math.PI);
+        ctx.arc(planet.x, planet.y, planetRadius, 0, 2 * Math.PI);
         ctx.fillStyle = '#4588ff';
         ctx.fill();
-      }      
-      
+    }
 
-
-      //create particle on click
-      canvas.addEventListener('click', function(e) {
+    //create particle on click
+    canvas.addEventListener('click', function(e) {
         console.log('here a');
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         particles.push({x, y, vx: 0, vy: 0});
         drawParticles();
-      });
+    });
 
-      window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', resizeCanvas);
 
-      resizeCanvas();
+    resizeCanvas();
 
-
-      //TICK!
-      function tick(){
-
+    //TICK!
+    function tick() {
         //calculate position
-        for (const p of particles){
-
+        for (const p of particles) {
             //Calculate Acceleration
-            if(p.y < canvas.height){
+            if (p.y < canvas.height) {
                 //super dumb gravity
-                p.vy = p.vy + .001
+                p.vy = p.vy + 0.001;
             }
             const grav = gravForceVector(p, planet);
             p.vx += grav.Fx;
             p.vy += grav.Fy;
 
             //Calculate Position
-
             p.y += p.vy;
             p.x += p.vx;
             //remove p? out of range
-            particles = particles.filter(p => p.x >= 0 && p.x <= canvas.width && p.y >= 0 && p.y <= canvas.height 
+            particles = particles.filter(p => p.x >= 0 && p.x <= canvas.width && p.y >= 0 && p.y <= canvas.height
                 && distance(p, planet) > planetRadius + moonRadius);
         }
 
-        drawParticles()
+        drawParticles();
         requestAnimationFrame(tick);
-      }
+    }
 
-      requestAnimationFrame(tick);
-    };
+    requestAnimationFrame(tick);
+};
