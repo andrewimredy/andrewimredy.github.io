@@ -3,6 +3,7 @@ let planetRadius = 30;
 let moonRadius = 10;
 
 let dragCurrent = null;
+let despawn = true;
 
 //calc distance between 2 particles
 function distance(p1, p2){
@@ -40,6 +41,7 @@ function gravForceVector(p1, p2) {
 
 
 window.onload = function() {
+    //particle should have Px Py Vx Vy
     let particles = [];
     let planet = {};
 
@@ -47,9 +49,12 @@ window.onload = function() {
     const ctx = canvas.getContext('2d');
     const gravitySlider = document.getElementById('gravity-slider');
     const gravityValue = document.getElementById('gravity-value');
+    const despawnRadio = document.getElementById('despawn'); 
     document.getElementById('clear-button').addEventListener('click', () => {particles = []});
+    despawnRadio.addEventListener('change', function() {
+        despawn = this.checked;
+    });
 
-    //particle should have Px Py Vx Vy
 
     // Set initial slider value and position
     gravitySlider.value = 9.8; // Set slider to 9.8
@@ -182,9 +187,11 @@ canvas.addEventListener('mouseup', function(e) {
             //Calculate Position
             p.y += p.vy;
             p.x += p.vx;
-            //remove p? out of range
-            particles = particles.filter(p => p.x >= 0 && p.x <= canvas.width && p.y >= 0 && p.y <= canvas.height
-                && distance(p, planet) > planetRadius + moonRadius);
+            //remove p on collision w planet
+            particles = particles.filter(p => distance(p, planet) > planetRadius + moonRadius);
+            if(despawn){
+                particles = particles.filter(p => p.x >= 0 && p.x <= canvas.width && p.y >= 0 && p.y <= canvas.height);
+            }
         }
 
         drawParticles();
