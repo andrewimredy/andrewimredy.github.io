@@ -3,7 +3,7 @@ let planetRadius = 30;
 let moonRadius = 10;
 
 let dragCurrent = null;
-let despawn = true;
+let despawn = false;
 
 //calc distance between 2 particles
 function distance(p1, p2){
@@ -28,7 +28,7 @@ function gravForceVector(p1, p2) {
 
     if (distSq === 0) return {Fx: 0, Fy: 0}; // avoid division by zero
 
-    const force = G * 3 / distSq;
+    const force = G * 5 / distSq;
     const dist = Math.sqrt(distSq);
     const unitX = dx / dist;
     const unitY = dy / dist;
