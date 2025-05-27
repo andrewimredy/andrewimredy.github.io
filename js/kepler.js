@@ -1,3 +1,7 @@
+let G = 9.8;
+let planetRadius = 30;
+let moonRadius = 10;
+
 //calc distance between 2 particles
 function distance(p1, p2){
     //whos that triangle nigga? pythagoras?
@@ -6,13 +10,38 @@ function distance(p1, p2){
     return dist;
 }
 
-function gravForce(){
-    
+function gravForce(p1, p2){
+    //GMm is a constant hehe
+    return G * 10 / (distance(p1, p2)**2) ;
+
+    //this returns a scalar. force is a vector.
+    //break down to component x and y?
 }
+
+function gravForceVector(p1, p2) {
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const distSq = dx * dx + dy * dy;
+
+    if (distSq === 0) return {Fx: 0, Fy: 0}; // avoid division by zero
+
+    const force = G * 3 / distSq;
+    const dist = Math.sqrt(distSq);
+    const unitX = dx / dist;
+    const unitY = dy / dist;
+
+    return {
+        Fx: force * unitX,
+        Fy: force * unitY
+    };
+}
+
 
 window.onload = function() {
       const canvas = document.getElementById('space');
       const ctx = canvas.getContext('2d');
+      const gravitySlider = document.getElementById('gravity-slider');
+      const gravityValue = document.getElementById('gravity-value');
       let particles = [];
       let planet = {};
       //particle should have Px Py Vx Vy
@@ -25,13 +54,17 @@ window.onload = function() {
       }
 
       //G slider?
+      gravitySlider.addEventListener('input', function() {
+        G = parseFloat(gravitySlider.value);
+        gravityValue.textContent = G.toFixed(1);
+    });
 
       function drawParticles() {
         ctx.fillStyle = '#111';
         ctx.fillRect(0,0, canvas.width, canvas.height);
         for (const p of particles) {
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 10, 0, 2 * Math.PI);
+          ctx.arc(p.x, p.y, moonRadius, 0, 2 * Math.PI);
           ctx.fillStyle = '#888';
           ctx.fill();
           ctx.strokeStyle = '#fff';
@@ -39,7 +72,7 @@ window.onload = function() {
         }
         //draw planet
         ctx.beginPath();
-        ctx.arc(planet.x, planet.y, 30, 0, 2*Math.PI);
+        ctx.arc(planet.x, planet.y, planetRadius, 0, 2*Math.PI);
         ctx.fillStyle = '#4588ff';
         ctx.fill();
       }      
@@ -48,6 +81,7 @@ window.onload = function() {
 
       //create particle on click
       canvas.addEventListener('click', function(e) {
+        console.log('here a');
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
@@ -65,18 +99,24 @@ window.onload = function() {
 
         //calculate position
         for (const p of particles){
+
+            //Calculate Acceleration
             if(p.y < canvas.height){
                 //super dumb gravity
-                p.vy = p.vy + .1
-                p.y = p.y + p.vy
+                p.vy = p.vy + .001
             }
-        distance(particles[0], planet);
+            const grav = gravForceVector(p, planet);
+            p.vx += grav.Fx;
+            p.vy += grav.Fy;
 
+            //Calculate Position
+
+            p.y += p.vy;
+            p.x += p.vx;
+            //remove p? out of range
+            particles = particles.filter(p => p.x >= 0 && p.x <= canvas.width && p.y >= 0 && p.y <= canvas.height 
+                && distance(p, planet) > planetRadius + moonRadius);
         }
-
-        //log dist of 1 particle(test)
-
-
 
         drawParticles()
         requestAnimationFrame(tick);
