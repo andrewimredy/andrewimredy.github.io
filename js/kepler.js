@@ -2,6 +2,8 @@ let G = 9.8;
 let planetRadius = 30;
 let moonRadius = 10;
 
+let dragCurrent = null;
+
 //calc distance between 2 particles
 function distance(p1, p2){
     //whos that triangle nigga? pythagoras?
@@ -38,12 +40,15 @@ function gravForceVector(p1, p2) {
 
 
 window.onload = function() {
+    let particles = [];
+    let planet = {};
+
     const canvas = document.getElementById('space');
     const ctx = canvas.getContext('2d');
     const gravitySlider = document.getElementById('gravity-slider');
     const gravityValue = document.getElementById('gravity-value');
-    let particles = [];
-    let planet = {};
+    document.getElementById('clear-button').addEventListener('click', () => {particles = []});
+
     //particle should have Px Py Vx Vy
 
     // Set initial slider value and position
@@ -67,6 +72,7 @@ window.onload = function() {
     function drawParticles() {
         ctx.fillStyle = '#111';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         for (const p of particles) {
             ctx.beginPath();
             ctx.arc(p.x, p.y, moonRadius, 0, 2 * Math.PI);
@@ -75,22 +81,86 @@ window.onload = function() {
             ctx.strokeStyle = '#fff';
             ctx.stroke();
         }
-        //draw planet
+
+        // Draw the planet
         ctx.beginPath();
         ctx.arc(planet.x, planet.y, planetRadius, 0, 2 * Math.PI);
         ctx.fillStyle = '#4588ff';
         ctx.fill();
+
+        // Draw an arrow pointing toward dragStart
+        if (isDragging && dragStart && dragCurrent) {
+            const fromX = dragCurrent.x;
+            const fromY = dragCurrent.y;
+            const toX = dragStart.x;
+            const toY = dragStart.y;
+
+            // Draw shaft
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.strokeStyle = '#ff0000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw arrowhead
+            const headLength = 10; // Length of the arrowhead
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headLength * Math.cos(angle - Math.PI / 6),
+                toY - headLength * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headLength * Math.cos(angle + Math.PI / 6),
+                toY - headLength * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.stroke();
+        }
     }
 
-    //create particle on click
-    canvas.addEventListener('click', function(e) {
-        console.log('here a');
+
+    let isDragging = false;
+    let dragStart = null;
+
+    canvas.addEventListener('mousedown', function(e) {
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        particles.push({x, y, vx: 0, vy: 0});
-        drawParticles();
+        dragStart = { x, y };
+        isDragging = true;
     });
+
+    canvas.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        dragCurrent = { x, y };
+    });
+
+canvas.addEventListener('mouseup', function(e) {
+    if (!isDragging) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const vx = (dragStart.x - x) * 0.01;
+    const vy = (dragStart.y - y) * 0.01;
+
+    particles.push({ x: dragStart.x, y: dragStart.y, vx, vy });
+
+    isDragging = false;
+    dragStart = null;
+    dragCurrent = null;
+});
+
 
     window.addEventListener('resize', resizeCanvas);
 
@@ -103,7 +173,7 @@ window.onload = function() {
             //Calculate Acceleration
             if (p.y < canvas.height) {
                 //super dumb gravity
-                p.vy = p.vy + 0.001;
+                //p.vy = p.vy + 0.001;
             }
             const grav = gravForceVector(p, planet);
             p.vx += grav.Fx;
