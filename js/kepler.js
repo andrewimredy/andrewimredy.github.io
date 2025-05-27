@@ -1,71 +1,202 @@
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
+let G = 9.8;
+let planetRadius = 30;
+let moonRadius = 10;
 
-let x0;
-let y0;
+let dragCurrent = null;
+let despawn = true;
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    x0 = canvas.width/2;
-    y0 = canvas.height/2;
-  }
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-
-
-function drawCircle(x, y, radius, colorHex){
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx. fillStyle = colorHex;
-    ctx.fill();
+//calc distance between 2 particles
+function distance(p1, p2){
+    //whos that triangle nigga? pythagoras?
+    const dist =  Math.sqrt( (p1.x - p2.x)**2 + (p1.y - p2.y)**2  );
+    console.log('Distance : ' + dist);
+    return dist;
 }
 
-// background
-ctx.fillStyle = '#cedef5';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+function gravForce(p1, p2){
+    //GMm is a constant hehe
+    return G * 10 / (distance(p1, p2)**2) ;
 
-//draw sun
-// drawCircle(x0, y0, canvas.width * .05, "#ffae00")
-
-
-//draw planet #1c69e6
-function drawPlanetPolar(r, theta, size, colorHex){
-    drawCircle(x0 + r * Math.sin(theta), y0 - r * Math.cos(theta), size, colorHex);
+    //this returns a scalar. force is a vector.
+    //break down to component x and y?
 }
 
-let lastE = 0;
-const interval = 17; // milliseconds
-let angleEarth = 0;
+function gravForceVector(p1, p2) {
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const distSq = dx * dx + dy * dy;
 
-function orbitEarth(time){
-    if (time - lastE >= interval) {
-        //erase, then draw
-        drawPlanetPolar(x0 /1.8, angleEarth, x0 / 30, "#d5deeb");
-        drawPlanetPolar(x0 /1.8, angleEarth + .01, x0 / 40, "#1c69e6");
-        angleEarth = (angleEarth + 0.01) % (Math.PI * 2); 
-        lastE = time; 
+    if (distSq === 0) return {Fx: 0, Fy: 0}; // avoid division by zero
+
+    const force = G * 3 / distSq;
+    const dist = Math.sqrt(distSq);
+    const unitX = dx / dist;
+    const unitY = dy / dist;
+
+    return {
+        Fx: force * unitX,
+        Fy: force * unitY
+    };
+}
+
+
+window.onload = function() {
+    //particle should have Px Py Vx Vy
+    let particles = [];
+    let planet = {};
+
+    const canvas = document.getElementById('space');
+    const ctx = canvas.getContext('2d');
+    const gravitySlider = document.getElementById('gravity-slider');
+    const gravityValue = document.getElementById('gravity-value');
+    const despawnRadio = document.getElementById('despawn'); 
+    document.getElementById('clear-button').addEventListener('click', () => {particles = []});
+    despawnRadio.addEventListener('change', function() {
+        despawn = this.checked;
+    });
+
+
+    // Set initial slider value and position
+    gravitySlider.value = 9.8; // Set slider to 9.8
+    gravityValue.textContent = (9.8).toFixed(1); // Display 9.8
+    G = 9.8; // Ensure G starts at 9.8
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        planet = {x: canvas.width / 2, y: canvas.height / 2};
+        drawParticles();
     }
-    requestAnimationFrame(orbitEarth);
-}
 
-let radiusMars = x0/1.2;
+    //G slider?
+    gravitySlider.addEventListener('input', function() {
+        G = parseFloat(gravitySlider.value);
+        gravityValue.textContent = G.toFixed(1);
+    });
 
-let angleM = 0;
-let lastM = 0;
-function orbitMars(time){
-    if (time - lastM >= interval) {
-        //erase, then draw
-        drawPlanetPolar(radiusMars, angleM, x0 / 30, "#d5deeb");
-        drawPlanetPolar(radiusMars, angleM + .007, x0 / 50, "#c24f32");
-        angleM = (angleM + 0.007) % (Math.PI * 2); 
-        lastM = time; 
+    function drawParticles() {
+        ctx.fillStyle = '#111';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (const p of particles) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, moonRadius, 0, 2 * Math.PI);
+            ctx.fillStyle = '#888';
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.stroke();
+        }
+
+        // Draw the planet
+        ctx.beginPath();
+        ctx.arc(planet.x, planet.y, planetRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = '#4588ff';
+        ctx.fill();
+
+        // Draw an arrow pointing toward dragStart
+        if (isDragging && dragStart && dragCurrent) {
+            const fromX = dragCurrent.x;
+            const fromY = dragCurrent.y;
+            const toX = dragStart.x;
+            const toY = dragStart.y;
+
+            // Draw shaft
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.strokeStyle = '#ff0000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw arrowhead
+            const headLength = 10; // Length of the arrowhead
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headLength * Math.cos(angle - Math.PI / 6),
+                toY - headLength * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headLength * Math.cos(angle + Math.PI / 6),
+                toY - headLength * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.stroke();
+        }
     }
-    requestAnimationFrame(orbitMars);
-}
-
-// requestAnimationFrame(orbitEarth);
-// requestAnimationFrame(orbitMars);
 
 
+    let isDragging = false;
+    let dragStart = null;
+
+    canvas.addEventListener('mousedown', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        dragStart = { x, y };
+        isDragging = true;
+    });
+
+    canvas.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        dragCurrent = { x, y };
+    });
+
+canvas.addEventListener('mouseup', function(e) {
+    if (!isDragging) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const vx = (dragStart.x - x) * 0.01;
+    const vy = (dragStart.y - y) * 0.01;
+
+    particles.push({ x: dragStart.x, y: dragStart.y, vx, vy });
+
+    isDragging = false;
+    dragStart = null;
+    dragCurrent = null;
+});
+
+
+    window.addEventListener('resize', resizeCanvas);
+
+    resizeCanvas();
+
+    //TICK!
+    function tick() {
+        //calculate position
+        for (const p of particles) {
+            //Calculate Acceleration
+            if (p.y < canvas.height) {
+                //super dumb gravity
+                //p.vy = p.vy + 0.001;
+            }
+            const grav = gravForceVector(p, planet);
+            p.vx += grav.Fx;
+            p.vy += grav.Fy;
+
+            //Calculate Position
+            p.y += p.vy;
+            p.x += p.vx;
+            //remove p on collision w planet
+            particles = particles.filter(p => distance(p, planet) > planetRadius + moonRadius);
+            if(despawn){
+                particles = particles.filter(p => p.x >= 0 && p.x <= canvas.width && p.y >= 0 && p.y <= canvas.height);
+            }
+        }
+
+        drawParticles();
+        requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+};
