@@ -5,6 +5,9 @@ let moonRadius = 10;
 let dragCurrent = null;
 let despawn = false;
 
+const moonColors = ['darkorange', 'lightblue', 'slategray', 'rosybrown', 'darkgrey', 'grey', 'aliceblue', 'tan'];
+
+
 //calc distance between 2 particles
 function distance(p1, p2){
     //whos that triangle nigga? pythagoras?
@@ -28,7 +31,7 @@ function gravForceVector(p1, p2) {
 
     if (distSq === 0) return {Fx: 0, Fy: 0}; // avoid division by zero
 
-    const force = G * 5 / distSq;
+    const force = G * 7 / distSq;
     const dist = Math.sqrt(distSq);
     const unitX = dx / dist;
     const unitY = dy / dist;
@@ -81,10 +84,9 @@ window.onload = function() {
         for (const p of particles) {
             ctx.beginPath();
             ctx.arc(p.x, p.y, moonRadius, 0, 2 * Math.PI);
-            ctx.fillStyle = '#888';
+            ctx.fillStyle = p.color;
             ctx.fill();
-            ctx.strokeStyle = '#fff';
-            ctx.stroke();
+
         }
 
         // Draw the planet
@@ -159,7 +161,9 @@ canvas.addEventListener('mouseup', function(e) {
     const vx = (dragStart.x - x) * 0.01;
     const vy = (dragStart.y - y) * 0.01;
 
-    particles.push({ x: dragStart.x, y: dragStart.y, vx, vy });
+    const color = moonColors[Math.floor(Math.random() * moonColors.length)];
+
+    particles.push({ x: dragStart.x, y: dragStart.y, vx, vy, color: color});
 
     isDragging = false;
     dragStart = null;
