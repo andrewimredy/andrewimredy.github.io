@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "pictures/IMG_3974.webp",
         "pictures/IMG_3991.webp",
         "pictures/IMG_3995.webp",
-        "pictures/IMG_4096.webp",
         "pictures/IMG_4119.webp",
         "pictures/IMG_4197.webp",
         "pictures/IMG_4463.webp",
@@ -34,7 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
         "pictures/IMG_6895.webp",
         "pictures/img_1477.webp",
         "pictures/img_0089.webp",
-        "pictures/img_1656.webp"
+        "pictures/img_1656.webp",
+        "pictures/IMG_5074.webp",
+        "pictures/IMG_5027.webp",
+        "pictures/IMG_5083.webp",
+        "pictures/IMG_5103.webp",
+        "pictures/IMG_5112.webp"
     ];
 
     shuffle(images);
