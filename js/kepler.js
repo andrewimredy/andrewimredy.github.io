@@ -82,17 +82,24 @@ window.onload = function() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         for (const p of particles) {
+            const gradient = ctx.createRadialGradient(p.x - 3, p.y - 3, 2, p.x, p.y, moonRadius);
+            gradient.addColorStop(0, 'lightgrey');
+            gradient.addColorStop(1, p.color);
+
             ctx.beginPath();
             ctx.arc(p.x, p.y, moonRadius, 0, 2 * Math.PI);
-            ctx.fillStyle = p.color;
+            ctx.fillStyle = gradient;
             ctx.fill();
-
         }
 
         // Draw the planet
+        const gradient = ctx.createRadialGradient(planet.x - 10, planet.y - 10, 10, planet.x, planet.y, planetRadius);
+        gradient.addColorStop(0, 'lightgrey');
+        gradient.addColorStop(1, '#4588ff');
+
         ctx.beginPath();
         ctx.arc(planet.x, planet.y, planetRadius, 0, 2 * Math.PI);
-        ctx.fillStyle = '#4588ff';
+        ctx.fillStyle = gradient;
         ctx.fill();
 
         // Draw an arrow pointing toward dragStart
