@@ -1,11 +1,27 @@
 // Get accelerometer data using the DeviceMotionEvent API
-if ('DeviceMotionEvent' in window) {
-    // Check if permission is needed (iOS 13+)
-    if (typeof DeviceMotionEvent.requestPermission === 'function') {
-        // Show a button or trigger this on user gesture (e.g., button click)
-        const btn = document.createElement('button');
-        btn.textContent = 'Enable Accelerometer';
-        btn.onclick = function() {
+
+function handleMotion(event) {
+    // event.acceleration: {x, y, z} in m/s^2 (without gravity)
+    // event.accelerationIncludingGravity: {x, y, z} in m/s^2 (with gravity)
+    // event.rotationRate: {alpha, beta, gamma} in deg/s
+
+    // Log the acceleration data
+    console.log('Acceleration (no gravity):', event.acceleration);
+    console.log('Acceleration (with gravity):', event.accelerationIncludingGravity);
+    console.log('Rotation rate:', event.rotationRate);
+    console.log('Interval (ms):', event.interval);
+
+    const accelDisplay = document.getElementById('accelerationDisplay');
+    if (accelDisplay && event.accelerationIncludingGravity) {
+        const { x, y, z } = event.accelerationIncludingGravity;
+        const g = Math.sqrt((x || 0) ** 2 + (y || 0) ** 2 + (z || 0) ** 2) / 9.80665;
+        accelDisplay.textContent = `Your g is ${g.toFixed(3)}`;
+    }
+}
+
+function startAccelerometer() {
+    if ('DeviceMotionEvent' in window) {
+        if (typeof DeviceMotionEvent.requestPermission === 'function') {
             DeviceMotionEvent.requestPermission().then(response => {
                 if (response === 'granted') {
                     window.addEventListener('devicemotion', handleMotion);
@@ -13,32 +29,26 @@ if ('DeviceMotionEvent' in window) {
                     alert('Permission denied for accelerometer.');
                 }
             });
-        };
-        document.body.appendChild(btn);
+        } else {
+            window.addEventListener('devicemotion', handleMotion);
+        }
     } else {
-        // No permission needed, just add listener
-        window.addEventListener('devicemotion', handleMotion);
-    }
-
-    function handleMotion(event) {
-        // event.acceleration: {x, y, z} in m/s^2 (without gravity)
-        // event.accelerationIncludingGravity: {x, y, z} in m/s^2 (with gravity)
-        // event.rotationRate: {alpha, beta, gamma} in deg/s
-
-        // Log the acceleration data
-        console.log('Acceleration (no gravity):', event.acceleration);
-        console.log('Acceleration (with gravity):', event.accelerationIncludingGravity);
-        console.log('Rotation rate:', event.rotationRate);
-        console.log('Interval (ms):', event.interval);
-
-
+        console.log('DeviceMotionEvent is not supported on this device.');
         const accelDisplay = document.getElementById('accelerationDisplay');
-        if (accelDisplay && event.accelerationIncludingGravity) {
-            const { x, y, z } = event.accelerationIncludingGravity;
-            const g = Math.sqrt((x || 0) ** 2 + (y || 0) ** 2 + (z || 0) ** 2) / 9.80665;
-            accelDisplay.textContent = `Your g is ${g.toFixed(3)}`;
+        if (accelDisplay) {
+            accelDisplay.textContent = 'Motion sensor not supported or access is restricted.';
         }
     }
-} else {
-    console.log('DeviceMotionEvent is not supported on this device.');
 }
+
+window.onload = function() {
+    const btn = document.getElementById('startAccelBtn');
+    if (btn) {
+        btn.onclick = function() {
+            // Hide the button and center container after starting
+            const container = document.getElementById('centerContainer');
+            if (container) container.style.display = 'none';
+            startAccelerometer();
+        };
+    }
+};
