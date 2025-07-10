@@ -19,9 +19,9 @@ function handleMotion(event) {
         const { x, y, z } = event.accelerationIncludingGravity;
         const g = Math.sqrt((x || 0) ** 2 + (y || 0) ** 2 + (z || 0) ** 2) / 9.80665;
         accelDisplay.textContent = `Your g is ${g.toFixed(3)}`;
-        if (xDisplay) xDisplay.textContent = `|x| = ${Math.abs(x || 0).toFixed(3)}`;
-        if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(3)}`;
-        if (zDisplay) zDisplay.textContent = `|z| = ${Math.abs(z || 0).toFixed(3)}`;
+        if (xDisplay) xDisplay.textContent = `|x| = ${Math.abs(x || 0).toFixed(2)}`;
+        if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(2)}`;
+        if (zDisplay) zDisplay.textContent = `|z| = ${Math.abs(z || 0).toFixed(2)}`;
     }
 }
 
