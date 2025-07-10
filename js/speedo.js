@@ -40,6 +40,7 @@ function startAccelerometer() {
         }
     } else {
         console.log('DeviceMotionEvent is not supported on this device.');
+        alert('Motion is not supported on this device - Use your Phone!');
         const accelDisplay = document.getElementById('accelerationDisplay');
         if (accelDisplay) {
             accelDisplay.textContent = 'Motion sensor not supported or access is restricted.';
