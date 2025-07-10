@@ -1,4 +1,5 @@
 // Get accelerometer data using the DeviceMotionEvent API
+var maxG = 0.0;
 
 function handleMotion(event) {
     // event.acceleration: {x, y, z} in m/s^2 (without gravity)
@@ -15,9 +16,14 @@ function handleMotion(event) {
     const xDisplay = document.getElementById('xDisplay');
     const yDisplay = document.getElementById('yDisplay');
     const zDisplay = document.getElementById('zDisplay');
+    const maxGDisplay = document.getElementById('maxGDisplay');
     if (accelDisplay && event.accelerationIncludingGravity) {
         const { x, y, z } = event.accelerationIncludingGravity;
         const g = Math.sqrt((x || 0) ** 2 + (y || 0) ** 2 + (z || 0) ** 2) / 9.80665;
+        if (g > maxG) {
+            maxG = g;
+            if (maxGDisplay) maxGDisplay.textContent = `Max g: ${maxG.toFixed(2)}`;
+        }
         accelDisplay.textContent = `Your g is ${g.toFixed(3)}`;
         if (xDisplay) xDisplay.textContent = `|x| = ${Math.abs(x || 0).toFixed(2)}`;
         if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(2)}`;
@@ -26,6 +32,7 @@ function handleMotion(event) {
 }
 
 function startAccelerometer() {
+
     if ('DeviceMotionEvent' in window) {
         if (typeof DeviceMotionEvent.requestPermission === 'function') {
             DeviceMotionEvent.requestPermission().then(response => {
