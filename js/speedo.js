@@ -22,12 +22,12 @@ function handleMotion(event) {
         const g = Math.sqrt((x || 0) ** 2 + (y || 0) ** 2 + (z || 0) ** 2) / 9.80665;
         if (g > maxG) {
             maxG = g;
-            if (maxGDisplay) maxGDisplay.textContent = `Max g: ${maxG.toFixed(2)}`;
+            if (maxGDisplay) maxGDisplay.textContent = `Max g force: ${maxG.toFixed(2)}`;
         }
-        accelDisplay.textContent = `Your g is ${g.toFixed(3)}`;
-        if (xDisplay) xDisplay.textContent = `|x| = ${Math.abs(x || 0).toFixed(2)}`;
-        if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(2)}`;
-        if (zDisplay) zDisplay.textContent = `|z| = ${Math.abs(z || 0).toFixed(2)}`;
+        accelDisplay.textContent = `Current g force: ${g.toFixed(3)}`;
+        if (xDisplay) xDisplay.textContent = `|x| = ${Math.abs(x || 0).toFixed(2)} m/s²`;
+        if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(2)} m/s²`;
+        if (zDisplay) zDisplay.textContent = `|z| = ${Math.abs(z || 0).toFixed(2)} m/s²`;
     }
 }
 
