@@ -55,14 +55,35 @@ function startAccelerometer() {
     }
 }
 
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+}
+
+function showDesktopMessageWithQR() {
+    const container = document.getElementById('centerContainer');
+    if (container) {
+        container.innerHTML = `
+            <div style="text-align:center;">
+                <p>Motion sensor not supported on desktop.<br>Try on your phone!</p>
+                <img id="qrCode" src="pictures/speedo_qr.png" alt="QR code to open on your phone" style="margin:20px 0; width:180px; height:180px;">
+            </div>
+        `;
+        container.style.display = 'block';
+    }
+}
+
 window.onload = function() {
     const btn = document.getElementById('startAccelBtn');
     if (btn) {
         btn.onclick = function() {
-            // Hide the button and center container after starting
-            const container = document.getElementById('centerContainer');
-            if (container) container.style.display = 'none';
-            startAccelerometer();
+            if (!isMobileDevice()) {
+                showDesktopMessageWithQR();
+            } else {
+                // Hide the button and center container after starting
+                const container = document.getElementById('centerContainer');
+                if (container) container.style.display = 'none';
+                startAccelerometer();
+            }
         };
     }
 };
