@@ -1,24 +1,27 @@
 // Get accelerometer data using the DeviceMotionEvent API
 var maxG = 0.0;
 
+//[{ x, y, z, timestamp }]
+var accelTimeSeries = new Array();
+
 function handleMotion(event) {
     // event.acceleration: {x, y, z} in m/s^2 (without gravity)
     // event.accelerationIncludingGravity: {x, y, z} in m/s^2 (with gravity)
     // event.rotationRate: {alpha, beta, gamma} in deg/s
 
-    // Log the acceleration data
-    console.log('Acceleration (no gravity):', event.acceleration);
-    console.log('Acceleration (with gravity):', event.accelerationIncludingGravity);
-    console.log('Rotation rate:', event.rotationRate);
-    console.log('Interval (ms):', event.interval);
-
+    //messy
     const accelDisplay = document.getElementById('accelerationDisplay');
     const xDisplay = document.getElementById('xDisplay');
     const yDisplay = document.getElementById('yDisplay');
     const zDisplay = document.getElementById('zDisplay');
     const maxGDisplay = document.getElementById('maxGDisplay');
+
+
     if (accelDisplay && event.accelerationIncludingGravity) {
         const { x, y, z } = event.accelerationIncludingGravity;
+
+        accelTimeSeries.push({ x, y, z, timestamp: Date.now() });
+
         const g = Math.sqrt((x || 0) ** 2 + (y || 0) ** 2 + (z || 0) ** 2) / 9.80665;
         if (g > maxG) {
             maxG = g;
