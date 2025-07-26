@@ -32,6 +32,10 @@ function handleMotion(event) {
         if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(2)} m/s²`;
         if (zDisplay) zDisplay.textContent = `|z| = ${Math.abs(z || 0).toFixed(2)} m/s²`;
     }
+
+
+    //find area under the curve for signed X
+
 }
 
 function startAccelerometer() {

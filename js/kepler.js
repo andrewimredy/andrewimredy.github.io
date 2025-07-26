@@ -60,9 +60,9 @@ window.onload = function() {
 
 
     // Set initial slider value and position
-    gravitySlider.value = 9.8; // Set slider to 9.8
-    gravityValue.textContent = (9.8).toFixed(1); // Display 9.8
-    G = 9.8; // Ensure G starts at 9.8
+    gravitySlider.value = 25; // Set slider to 9.8
+    gravityValue.textContent = (25).toFixed(1); 
+    G = 25; /
 
     function resizeCanvas() {
         canvas.width = window.innerWidth;

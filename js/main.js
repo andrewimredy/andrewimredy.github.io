@@ -62,25 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateImage(currentIndex);
     });
 
-    // Swipe functionality for mobile
-    let startX = 0;
-
-    mainPic.addEventListener("touchstart", (e) => {
-        startX = e.touches[0].clientX;
-    });
-
-    mainPic.addEventListener("touchend", (e) => {
-        const endX = e.changedTouches[0].clientX;
-        if (startX - endX > 50) {
-            // Swipe left
-            currentIndex = (currentIndex + 1) % images.length;
-            updateImage(currentIndex);
-        } else if (endX - startX > 50) {
-            // Swipe right
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            updateImage(currentIndex);
-        }
-    });
 
     // Initialize the slideshow
     updateImage(currentIndex);
@@ -95,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mainImg && modal && modalImg && modalBg) {
         mainImg.addEventListener('click', function() {
             // Only show modal on desktop (not mobile)
-            if (window.innerWidth > 768) {
+            if (window.innerWidth > 1000) {
                 modal.classList.add('show');
                 modalImg.src = mainImg.src;
                 modalImg.alt = mainImg.alt;
