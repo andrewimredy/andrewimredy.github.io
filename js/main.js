@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButton = document.getElementById("next");
 
     const images = [
+        "pictures/img_0089.webp",
         "pictures/IMG_1974.webp",
         "pictures/IMG_2615.webp",
         "pictures/IMG_2617.webp",
@@ -32,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "pictures/IMG_4480.webp",
         "pictures/IMG_6895.webp",
         "pictures/img_1477.webp",
-        "pictures/img_0089.webp",
         "pictures/img_1656.webp",
         "pictures/IMG_5074.webp",
         "pictures/IMG_5027.webp",
