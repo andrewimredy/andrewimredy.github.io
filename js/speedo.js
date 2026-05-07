@@ -3,6 +3,7 @@ var maxG = 0.0;
 
 //[{ x, y, z, timestamp }]
 var accelTimeSeries = new Array();
+var speedTimeSeries = new Array();
 
 function handleMotion(event) {
     // event.acceleration: {x, y, z} in m/s^2 (without gravity)
@@ -15,12 +16,19 @@ function handleMotion(event) {
     const yDisplay = document.getElementById('yDisplay');
     const zDisplay = document.getElementById('zDisplay');
     const maxGDisplay = document.getElementById('maxGDisplay');
+    const speedDisplay = document.getElementById('speedDisplay');
 
 
     if (accelDisplay && event.accelerationIncludingGravity) {
         const { x, y, z } = event.accelerationIncludingGravity;
 
         accelTimeSeries.push({ x, y, z, timestamp: Date.now() });
+
+        // Use gravity-free acceleration for speed
+        const a = event.acceleration;
+        if (a) {
+            speedTimeSeries.push({ x: a.x, y: a.y, z: a.z, timestamp: Date.now() });
+        }
 
         const g = Math.sqrt((x || 0) ** 2 + (y || 0) ** 2 + (z || 0) ** 2) / 9.80665;
         if (g > maxG) {
@@ -31,6 +39,13 @@ function handleMotion(event) {
         if (xDisplay) xDisplay.textContent = `|x| = ${Math.abs(x || 0).toFixed(1)} m/s²`;
         if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(1)} m/s²`;
         if (zDisplay) zDisplay.textContent = `|z| = ${Math.abs(z || 0).toFixed(1)} m/s²`;
+        const speed = speedTimeSeries.reduce((v, sample, i) => {
+            if (i === 0) return { vx: 0, vy: 0, vz: 0 };
+            const dt = (sample.timestamp - speedTimeSeries[i - 1].timestamp) / 1000;
+            return { vx: v.vx + (sample.x || 0) * dt, vy: v.vy + (sample.y || 0) * dt, vz: v.vz + (sample.z || 0) * dt };
+        }, { vx: 0, vy: 0, vz: 0 });
+        const speedMag = Math.sqrt(speed.vx ** 2 + speed.vy ** 2 + speed.vz ** 2);
+        speedDisplay.textContent = `Current speed: ${speedMag.toFixed(1)} m/s`
     }
 
 
