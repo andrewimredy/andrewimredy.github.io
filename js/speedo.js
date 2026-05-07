@@ -27,10 +27,10 @@ function handleMotion(event) {
             maxG = g;
             if (maxGDisplay) maxGDisplay.textContent = `Max g force: ${maxG.toFixed(2)}`;
         }
-        accelDisplay.textContent = `Current g force: ${g.toFixed(3)}`;
-        if (xDisplay) xDisplay.textContent = `|x| = ${Math.abs(x || 0).toFixed(2)} m/s²`;
-        if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(2)} m/s²`;
-        if (zDisplay) zDisplay.textContent = `|z| = ${Math.abs(z || 0).toFixed(2)} m/s²`;
+        accelDisplay.textContent = `Current g force: ${g.toFixed(2)}`;
+        if (xDisplay) xDisplay.textContent = `|x| = ${Math.abs(x || 0).toFixed(1)} m/s²`;
+        if (yDisplay) yDisplay.textContent = `|y| = ${Math.abs(y || 0).toFixed(1)} m/s²`;
+        if (zDisplay) zDisplay.textContent = `|z| = ${Math.abs(z || 0).toFixed(1)} m/s²`;
     }
 
 
