@@ -5,18 +5,14 @@ body, html {
     overflow: auto;
     font-family: 'Exo 2';
     scroll-behavior: smooth;
-    background-color: #dfecfc;
+    background-color: #101020;
+    color: #EEF4ED
 }
 
-
-#bg-canvas{
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1; /* behind everything */
-    width: 100vw;
-    height: 100vh;
+a {
+    color: #ffb84d;
 }
+
 
 #content{
     position: relative;
@@ -40,7 +36,7 @@ body, html {
     margin-right: 1rem;
     margin-bottom: .5rem;
     margin-top: .5rem;
-    color: darkblue;
+    color: #ffb84d;
 }
 
 #top-bar{
@@ -74,13 +70,20 @@ body, html {
 .aboutme-p {
     margin-top: 6px;
     margin-bottom: 6px;
-    max-width: min(700px, 100%);
-
+    max-width: min(660px, 100%);
 }
 
+.work-item-link {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: min(460px, 100%);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
 
 .work-item {
-    background: white;
+    background: #EEF4ED;
     border-radius: 0.5rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     text-align: center;
@@ -91,7 +94,7 @@ body, html {
     margin-right: auto;
     max-width: min(460px, 100%);
     margin-bottom: 2rem;
-
+    color: #101020;
 }
 
 .work-item:hover {
@@ -106,20 +109,17 @@ body, html {
 
 }
 
-.work-button {
+.resume-button {
     display: inline-block;
     padding: 1rem 2rem;
-    background-color: #2c3e50;
-    color: white;
+    background-color: #0E79B2;
+    color: #ffb84d;
     font-size: larger;
     text-decoration: none;
     border-radius: 0.4rem;
     transition: background-color 0.2s ease;
 }
 
-.work-button:hover {
-    background-color: #1a2533;
-}
 
 #slideshow-container {
     width: 100%;
@@ -246,11 +246,6 @@ body, html {
     object-fit: contain;
 }
 
-.work-item-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
 .work-item-link:hover .work-item {
     box-shadow: 0 0 8px #aaa;
     cursor: pointer;
